@@ -74,16 +74,22 @@ export function ResumeBuilder() {
   const [isOptimizing, setIsOptimizing] = useState(false)
 
   const optimizeText = async (text: string) => {
-    setIsOptimizing(true)
-    // 模拟AI文本优化过程
-    await new Promise((resolve) => setTimeout(resolve, 2000))
-
-    // 模拟分段结果
-    const segments = [text.substring(0, Math.floor(text.length / 2)), text.substring(Math.floor(text.length / 2))]
-
-    setIsOptimizing(false)
-    return segments
+  setIsOptimizing(true)
+  try {
+    const response = await fetch('http://localhost:8000/optimize', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ text }),
+    });
+    const data = await response.json();
+    setIsOptimizing(false);
+    return data.segments;
+  } catch (error) {  
+    setIsOptimizing(false);
+    alert("AI优化失败，请检查后端服务是否运行");
+    return [text];
   }
+};
 
   const addExperience = () => {
     const newExp = {
