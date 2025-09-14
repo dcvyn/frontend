@@ -23,6 +23,11 @@ model = AutoModel.from_pretrained(
 ).to(device)
 
 
+def segment_text(text):
+    import re
+    segments = [seg.strip() for seg in re.split(r'[。！？]', text) if seg.strip()]
+    return segments
+
 def split_into_sentences(text: str):
     return sent_model(text)
 
@@ -167,5 +172,8 @@ def main():
             print(f"处理过程中出现错误: {e}")
 
 
+
+
 if __name__ == "__main__":
+
     main()
